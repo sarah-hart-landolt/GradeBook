@@ -5,17 +5,35 @@ using System.Text;
 
 namespace GradeBook
 {
-    public class Book
+    public delegate void GradeAddedDelegate(object sender, EventArgs args);
+
+
+    public class NamedObject
     {
-        public Book(string name)
+        public NamedObject(string name)
+        {
+            Name = name;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+
+        }
+    }
+    public class Book: NamedObject
+    {
+        public Book(string name) : base(name)
         {
             grades = new List<double>();
-            Name = name; 
+            Name = name;
         }
+
 
         public void AddLetterGrade(char letter)
         {
-            switch(letter)            
+            switch (letter)
             {
                 case 'A':
                     AddGrade(90);
@@ -37,21 +55,28 @@ namespace GradeBook
                 default:
                     AddGrade(0);
                     break;
-        }
+            }
         }
         public void AddGrade(double grade)
         {
-            if (grade <= 100 && grade >=0)
+            if (grade <= 100 && grade >= 0)
             {
-                
-               grades.Add(grade);  
+
+                grades.Add(grade);
+                if (GradeAdded != null)
+                {
+                    GradeAdded(this, new EventArgs());
+                }
 
             }
             else
             {
-                Console.WriteLine("Invalid value");
+                throw new ArgumentException($"Invalid {nameof(grade)}");
             }
+
         }
+
+        public event GradeAddedDelegate GradeAdded;
 
         public Statistics GetStatistics()
         {
@@ -69,7 +94,7 @@ namespace GradeBook
             }
             result.Average /= grades.Count();
 
-            switch(result.Average)
+            switch (result.Average)
             {
                 case var d when d >= 90.0:
                     result.Letter = 'A';
@@ -96,6 +121,5 @@ namespace GradeBook
         }
 
         private List<double> grades;
-        public string Name; 
     }
 }
