@@ -84,6 +84,20 @@ namespace GradeBook.Test
         }
 
         [Fact]
+        public void StringsBehaveLikeValueTypes()
+        {
+            string name = "Scott";
+            var upper = MakeUppercase(name);
+
+            Assert.Equal("SCOTT", upper);
+        }
+
+        private string MakeUppercase(string parameter)
+        {
+           return parameter.ToUpper();
+        }
+
+        [Fact]
         public void GetBookReturnsDifferentObjects()
         {
             //arrange 
