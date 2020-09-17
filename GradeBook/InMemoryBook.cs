@@ -22,9 +22,26 @@ namespace GradeBook
 
         }
     }
-    public class Book: NamedObject
+
+    public interface IBook
+    {
+        void AddGrade(double grade);
+        Statistics GetStatistics();
+        string Name { get; }
+        event GradeAddedDelegate GradeAdded;
+    }
+
+    public abstract class Book : NamedObject
     {
         public Book(string name) : base(name)
+        {
+
+        }
+        public abstract void AddGrade(double grade);
+    }
+    public class InMemoryBook: Book
+    {
+        public InMemoryBook(string name) : base(name)
         {
             grades = new List<double>();
             Name = name;
@@ -57,7 +74,7 @@ namespace GradeBook
                     break;
             }
         }
-        public void AddGrade(double grade)
+        public override void AddGrade(double grade)
         {
             if (grade <= 100 && grade >= 0)
             {
