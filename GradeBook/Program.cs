@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace GradeBook
 {
@@ -9,38 +7,32 @@ namespace GradeBook
     {
         static void Main(string[] args)
         {
-
-            var book = new InMemoryBook("Sarah's Grade InMemoryBook");
-            book.GradeAdded += OnGradedAdded;
+            IBook book = new DiskBook("Sarah's Grade Book");
+            book.GradeAdded += OnGradeAdded;
 
             EnterGrades(book);
 
             var stats = book.GetStatistics();
+
+            Console.WriteLine($"For the book named {book.Name}");
             Console.WriteLine($"The lowest grade is {stats.Low}");
             Console.WriteLine($"The highest grade is {stats.High}");
-            Console.WriteLine($"The average grade is {stats.Average}");
-
-
-            static void OnGradedAdded(object sender, EventArgs e)
-            {
-                Console.WriteLine("A grade was added");
-            }
-
+            Console.WriteLine($"The average grade is {stats.Average:N1}");
+            Console.WriteLine($"The letter grade is {stats.Letter}");
         }
 
-        private static void EnterGrades(InMemoryBook book)
+        private static void EnterGrades(IBook book)
         {
             while (true)
             {
-
-                Console.WriteLine($"Enter a grade or 'q' to quit");
-
+                Console.WriteLine("Enter a grade or 'q' to quit");
                 var input = Console.ReadLine();
 
                 if (input == "q")
                 {
                     break;
                 }
+
                 try
                 {
                     var grade = double.Parse(input);
@@ -58,8 +50,13 @@ namespace GradeBook
                 {
                     Console.WriteLine("**");
                 }
-
             }
         }
+
+        static void OnGradeAdded(object sender, EventArgs e)
+        {
+            Console.WriteLine("A grade was added");
+        }
+
     }
 }
